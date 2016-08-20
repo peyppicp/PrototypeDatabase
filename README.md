@@ -11,4 +11,11 @@ Guide
         Table test_table = test_database.createTable("test_table");
 ```
 
+TODO
+--------
+
+<br>Use another file to manage the fields in the table
+<br>Implments SQL support
+<br>SQL engine
+<br>Foreign key
 
