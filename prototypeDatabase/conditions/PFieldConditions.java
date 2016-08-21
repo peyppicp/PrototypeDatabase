@@ -7,6 +7,7 @@ import org.prototypeDatabase.entity.PField;
  */
 public class PFieldConditions {
 
+    private String type;
     private String isPrimary;
     private String isForeign;
     private String isNotNull;
@@ -17,6 +18,14 @@ public class PFieldConditions {
     private PField foreign_key;
     private int onDelete;
     private int onUpdata;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getIsPrimary() {
         return isPrimary;

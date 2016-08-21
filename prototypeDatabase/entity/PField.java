@@ -8,7 +8,7 @@ import org.prototypeDatabase.conditions.PFieldConditions;
 public class PField {
 
     private String name;
-    private String type;
+    //    private String type;
     private PFieldConditions conditions;
     private Table table; //table在创建PField的时候将自身作为参数传入
 
@@ -16,13 +16,13 @@ public class PField {
         return table;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+//    public String getType() {
+//        return type;
+////    }
+//
+//    public void setType(String type) {
+//        this.type = type;
+//    }
 
     public void setTable(Table table) {
         this.table = table;

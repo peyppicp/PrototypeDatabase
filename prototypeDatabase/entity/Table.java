@@ -3,11 +3,12 @@ package org.prototypeDatabase.entity;
 import com.csvreader.CsvWriter;
 import org.prototypeDatabase.conditions.PFieldConditions;
 import org.prototypeDatabase.exception.PFieldNotFoundException;
+import org.prototypeDatabase.util.reflect.PFieldReflecter;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by Peyppicp on 2016/8/20.
@@ -18,6 +19,16 @@ public class Table {
     private List<PField> pFields = new LinkedList<>();
     private Database database;
     private File table_file;
+    private File properties_file;
+    private Properties properties = new Properties();
+
+    public File getPropertiesFile() {
+        return properties_file;
+    }
+
+    public void setPropertiesFile(File properties) {
+        this.properties_file = properties;
+    }
 
     public PField getPFieldByName(String name) throws PFieldNotFoundException {
         for (PField pField : pFields) {
@@ -32,10 +43,7 @@ public class Table {
         String[] records = new String[pFields.size()];
         int i = 0;
         for (PField pField : pFields) {
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append(pField.getName()).append("&").append(pField.getType()).append("&").append(pField.getConditions().getIsPrimary())
-                    .append("&").append(pField.getConditions().getIsNotNull()).append("&").append(pField.getConditions().getIsUnique());
-            records[0] = stringBuffer.toString();
+            records[i] = pField.getName();
             i++;
         }
         CsvWriter writer = new CsvWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(table_file, true), "UTF-8")), ',');
@@ -43,24 +51,28 @@ public class Table {
         writer.close();
     }
 
-    public void createPField(String name, String type, PFieldConditions conditions) {
+    public void createPField(String name, PFieldConditions conditions) throws IllegalAccessException, IOException {
         PField pField = new PField();
         pField.setName(name);
-        pField.setType(type);
+//        pField.setType(type);
         pField.setConditions(conditions);
         pField.setTable(this);
         conditions.setPField(pField);
         addPFields(pField);
-//        CsvWriter writer = new CsvWriter(new BufferedOutputStream(new FileOutputStream(table_file)), '&', Charset.forName("UTF-8"));
-//        CsvWriter writer = new CsvWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(table_file, true), "UTF-8")), '&');
-    }
 
-    public void setName(String name) {
-        this.name = name;
+        PFieldReflecter pFieldReflecter = new PFieldReflecter();
+        String key = new StringBuffer(this.name).append(".").append(name).toString();
+        String value = pFieldReflecter.getValue(conditions);
+        properties.setProperty(key, value);
+        properties.store(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(properties_file, true), "UTF-8")), "");
     }
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public File getTable_file() {

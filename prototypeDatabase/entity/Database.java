@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by Peyppicp on 2016/8/20.
@@ -18,7 +19,33 @@ public class Database {
     private String name;
     private List<Table> tables = new LinkedList<>();
     private File database_file;
+    private File properties_file;
     private PrototypeDatabase prototypeDatabase;
+    private Properties properties;
+
+    public File getProperties_file() {
+        return properties_file;
+    }
+
+    public void setProperties_file(File properties_file) {
+        this.properties_file = properties_file;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    public File getPropertiesFile() {
+        return properties_file;
+    }
+
+    public void setPropertiesFile(File properties) {
+        this.properties_file = properties;
+    }
 
     public PrototypeDatabase getPrototypeDatabase() {
         return prototypeDatabase;
@@ -37,6 +64,7 @@ public class Database {
         Table table = new Table();
         table.setName(name);
         table.setTable_file(file);
+        table.setPropertiesFile(properties_file);
         table.setDatabase(this);
         tables.add(table);
         return table;
