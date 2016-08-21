@@ -14,9 +14,9 @@ Guide
 TODO
 --------
 
-<br>Use another file to manage the fields in the table
-<br>Implments SQL support
-<br>SQL engine
-<br>Foreign key
+<br>Use another file to manage the fields in the table   `finish`
+<br>Implments SQL support   `in progress`
+<br>SQL engine   `in progress`
+<br>Foreign key   `in progress`
 
 #######Contact me at 840796994@qq.com
