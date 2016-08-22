@@ -24,19 +24,7 @@ public class Table {
     private Properties properties = new Properties();
     private SQLEngine sqlEngine = new SQLEngine(this);
 
-    public File getPropertiesFile() {
-        return properties_file;
-    }
-
-    public void setPropertiesFile(File properties) {
-        this.properties_file = properties;
-    }
-
-    private SQLEngine getSQLEngine() {
-        return sqlEngine;
-    }
-
-    public List<PField> getPFields() {
+    public List<PField> listPFields() {
         return pFields;
     }
 
@@ -59,6 +47,7 @@ public class Table {
         CsvWriter writer = new CsvWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(table_file, true), "UTF-8")), ',');
         writer.writeRecord(records);
         writer.close();
+        properties.store(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(properties_file, true), "UTF-8")), "");
     }
 
     public void createPField(String name, PFieldConditions conditions) throws IllegalAccessException, IOException {
@@ -74,7 +63,32 @@ public class Table {
         String key = new StringBuffer(this.name).append(".").append(name).toString();
         String value = pFieldReflecter.getValue(conditions);
         properties.setProperty(key, value);
-        properties.store(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(properties_file, true), "UTF-8")), "");
+    }
+
+    public void addPFields(PField pField) {
+        if (!pFields.contains(pField)) {
+            pFields.add(pField);
+        }
+    }
+
+    public SQLEngine getSqlEngine() {
+        return sqlEngine;
+    }
+
+    public File getPropertiesFile() {
+        return properties_file;
+    }
+
+    public void setPropertiesFile(File properties) {
+        this.properties_file = properties;
+    }
+
+    private SQLEngine getSQLEngine() {
+        return sqlEngine;
+    }
+
+    public List<PField> getPFields() {
+        return pFields;
     }
 
     public String getName() {
@@ -101,17 +115,4 @@ public class Table {
         this.database = database;
     }
 
-    public void addPFields(PField pField) {
-        if (!pFields.contains(pField)) {
-            pFields.add(pField);
-        }
-    }
-
-    public SQLEngine getSqlEngine() {
-        return sqlEngine;
-    }
-
-    public void setSqlEngine(SQLEngine sqlEngine) {
-        this.sqlEngine = sqlEngine;
-    }
 }

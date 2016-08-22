@@ -1,6 +1,7 @@
 package org.prototypeDatabase.core.insert;
 
 import org.prototypeDatabase.conditions.sql.Into;
+import org.prototypeDatabase.conditions.sql.Result;
 import org.prototypeDatabase.conditions.sql.Values;
 import org.prototypeDatabase.core.SQLInterface;
 import org.prototypeDatabase.entity.Table;
@@ -46,17 +47,17 @@ public class InsertSQL implements SQLInterface{
     }
 
     @Override
-    public void executeTable(Table table) throws IOException, OperationNotIllegalException {
-//        List<PField> pFields = table.getPFields();
+    public Result executeTable(Table table) throws IOException, OperationNotIllegalException {
         if (into == null) {
             CsvOperation.writeTo(table, values.getValues());
         } else {
             throw new OperationNotIllegalException();
         }
+        return null;
     }
 
     @Override
-    public void executeGlobal() throws IOException {
-
+    public Result executeGlobal() throws IOException {
+        return null;
     }
 }

@@ -35,6 +35,10 @@ public class PrototypeDatabase {
         return prototypeDatabase;
     }
 
+    public List<Database> listDatabase() {
+        return databases;
+    }
+
     public Database createDataBase(String name) throws DatabaseAlreadExistsException, IOException {
         //在base_file下面建立文件夹作为数据库
         File file = new File(base_file, name);

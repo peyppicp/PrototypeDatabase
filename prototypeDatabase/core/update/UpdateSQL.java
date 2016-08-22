@@ -1,6 +1,7 @@
 package org.prototypeDatabase.core.update;
 
 import org.prototypeDatabase.conditions.sql.From;
+import org.prototypeDatabase.conditions.sql.Result;
 import org.prototypeDatabase.conditions.sql.Set;
 import org.prototypeDatabase.conditions.sql.Where;
 import org.prototypeDatabase.core.SQLInterface;
@@ -51,12 +52,12 @@ public class UpdateSQL implements SQLInterface {
     }
 
     @Override
-    public void executeTable(Table table) throws IOException {
-
+    public Result executeTable(Table table) throws IOException {
+        return null;
     }
 
     @Override
-    public void executeGlobal() throws IOException {
-
+    public Result executeGlobal() throws IOException {
+        return null;
     }
 }

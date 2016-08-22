@@ -23,36 +23,12 @@ public class Database {
     private PrototypeDatabase prototypeDatabase;
     private Properties properties;
 
-    public PrototypeDatabase getPrototypeDatabase() {
-        return prototypeDatabase;
+    public List<Table> listTables() {
+        return tables;
     }
 
-    public void setPrototypeDatabase(PrototypeDatabase prototypeDatabase) {
-        this.prototypeDatabase = prototypeDatabase;
-    }
+    public void execute(SQLInterface sqlInterface) {
 
-    public File getProperties_file() {
-        return properties_file;
-    }
-
-    public void setProperties_file(File properties_file) {
-        this.properties_file = properties_file;
-    }
-
-    public Properties getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Properties properties) {
-        this.properties = properties;
-    }
-
-    public File getPropertiesFile() {
-        return properties_file;
-    }
-
-    public void setPropertiesFile(File properties) {
-        this.properties_file = properties;
     }
 
     public Table createTable(String name) throws AlreadyExistDatabaseException, IOException {
@@ -119,8 +95,36 @@ public class Database {
         this.name = name;
     }
 
-    public void execute(SQLInterface sqlInterface) {
+    public PrototypeDatabase getPrototypeDatabase() {
+        return prototypeDatabase;
+    }
 
+    public void setPrototypeDatabase(PrototypeDatabase prototypeDatabase) {
+        this.prototypeDatabase = prototypeDatabase;
+    }
+
+    public File getProperties_file() {
+        return properties_file;
+    }
+
+    public void setProperties_file(File properties_file) {
+        this.properties_file = properties_file;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    public File getPropertiesFile() {
+        return properties_file;
+    }
+
+    public void setPropertiesFile(File properties) {
+        this.properties_file = properties;
     }
 
 }

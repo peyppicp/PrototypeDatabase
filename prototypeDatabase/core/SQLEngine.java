@@ -1,5 +1,6 @@
 package org.prototypeDatabase.core;
 
+import org.prototypeDatabase.conditions.sql.Result;
 import org.prototypeDatabase.entity.Table;
 import org.prototypeDatabase.exception.OperationNotIllegalException;
 
@@ -27,7 +28,11 @@ public class SQLEngine {
         this.table = table;
     }
 
-    public void executeTable(SQLInterface sqlInterface) throws IOException, OperationNotIllegalException {
-        sqlInterface.executeTable(table);
+    public Result executeTable(SQLInterface sqlInterface) throws IOException, OperationNotIllegalException {
+        return sqlInterface.executeTable(table);
+    }
+
+    public void executeGlobal(SQLInterface sqlInterface) throws IOException {
+        sqlInterface.executeGlobal();
     }
 }

@@ -1,5 +1,6 @@
 package org.prototypeDatabase.core;
 
+import org.prototypeDatabase.conditions.sql.Result;
 import org.prototypeDatabase.entity.Table;
 import org.prototypeDatabase.exception.OperationNotIllegalException;
 
@@ -10,7 +11,7 @@ import java.io.IOException;
  */
 public interface SQLInterface {
 
-    public void executeTable(Table table) throws IOException, OperationNotIllegalException;
+    public Result executeTable(Table table) throws IOException, OperationNotIllegalException;
 
-    public void executeGlobal() throws IOException;
+    public Result executeGlobal() throws IOException;
 }
