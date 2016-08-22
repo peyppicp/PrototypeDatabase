@@ -37,6 +37,16 @@ public class Table {
         throw new PFieldNotFoundException();
     }
 
+    public void modify() throws IllegalAccessException, IOException {
+        PFieldReflecter pFieldReflecter = new PFieldReflecter();
+        for (PField pField : pFields) {
+            String key = new StringBuffer(this.name).append(".").append(name).toString();
+            String value = pFieldReflecter.getValue(pField.getConditions());
+            properties.setProperty(key, value);
+        }
+        properties.store(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(properties_file, true), "UTF-8")), "");
+    }
+
     public void create() throws IOException {
         String[] records = new String[pFields.size()];
         int i = 0;

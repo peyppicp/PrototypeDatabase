@@ -122,6 +122,7 @@ public class SelectSQL implements SQLInterface {
             }
         }
         result.setResultsList(records);
+        reader.close();
         return result;
     }
 
@@ -141,6 +142,7 @@ public class SelectSQL implements SQLInterface {
             strings.add(record);
         }
         result.setResultsList(strings);
+        reader.close();
         return result;
     }
 
