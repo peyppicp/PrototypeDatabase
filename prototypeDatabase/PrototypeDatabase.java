@@ -19,12 +19,20 @@ import java.util.*;
  */
 public class PrototypeDatabase {
 
+    private static PrototypeDatabase prototypeDatabase;
     private List<Database> databases = new LinkedList<>();
     private String base_path;
     private File base_file;
 
-    public PrototypeDatabase() throws IOException, PropertiesNotFountException {
+    private PrototypeDatabase() throws IOException, PropertiesNotFountException {
         doInit();
+    }
+
+    public static synchronized PrototypeDatabase instance() throws IOException, PropertiesNotFountException {
+        if (prototypeDatabase == null) {
+            prototypeDatabase = new PrototypeDatabase();
+        }
+        return prototypeDatabase;
     }
 
     public Database createDataBase(String name) throws DatabaseAlreadExistsException, IOException {
@@ -105,6 +113,9 @@ public class PrototypeDatabase {
                     }
                     Database database = new Database();
                     database.setPropertiesFile(properties_file);
+                    database.setDatabase_file(database_file);
+                    database.setName(database_name);
+                    database.setPrototypeDatabase(this);
                     File[] table_files = database_file.listFiles();
                     if (table_files.length != 0 || table_files != null) {
                         //设置表
@@ -112,62 +123,40 @@ public class PrototypeDatabase {
                             File table_file = table_files[j];
                             if (table_file.isFile() && table_file.getName().endsWith(".csv")) {
                                 Table table = new Table();
-//                                CsvReader csvReader = new CsvReader(new BufferedInputStream(new FileInputStream(table_file)), Charset.forName("UTF-8"));
-//                                CsvReader csvReader = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(table_file), "UTF-8")), ',');
-//                                csvReader.readHeaders();
-//                                String[] headers = csvReader.getHeaders();
                                 //设置表的字段
+                                String file_name = table_file.getName();
+                                String table_name = file_name.substring(0, file_name.length() - 4);
+                                table.setName(table_name);
+                                table.setDatabase(database);
+                                table.setTable_file(table_file);
+                                //读取table的pField属性
                                 Properties table_properties = new Properties();
                                 table_properties.load(new BufferedReader(new InputStreamReader(new FileInputStream(properties_file))));
                                 Set<Map.Entry<Object, Object>> properties_entries = table_properties.entrySet();
-//                                for (int k = 0; k < headers.length; k++) {
-//                                    String[] split = headers[k].split("&");
-//                                    PField pField = new PField();
-//                                    pField.setName(split[0]);
-//                                    pField.setType(split[1]);
-//                                    PFieldConditions pFieldConditions = new PFieldConditions();
-//                                    if (split.length >= 3 && split[2].equalsIgnoreCase("primary key")) {
-//                                        pFieldConditions.setIsPrimary(PFieldConstants.PRIMARY_KEY);
-//                                    }
-//                                    if (split.length >= 4 && split[3].equalsIgnoreCase("not null")) {
-//                                        pFieldConditions.setIsNotNull(PFieldConstants.NOT_NULL);
-//                                    }
-//                                    if (split.length >= 5 && split[4].equalsIgnoreCase("unique")) {
-//                                        pFieldConditions.setIsUnique(PFieldConstants.UNQIUE);
-//                                    }
-//                                    pField.setConditions(pFieldConditions);
-//                                    pFieldConditions.setPField(pField);
-//                                    pField.setTable(table);
-//                                    table.addPFields(pField);
-//                                }
                                 Iterator<Map.Entry<Object, Object>> iterator = properties_entries.iterator();
                                 while (iterator.hasNext()) {
                                     Map.Entry<Object, Object> property = iterator.next();
-                                    PField pField = new PField();
-                                    PFieldConditions pFieldConditions = new PFieldConditions();
-                                    PFieldReflecter pFieldReflecter = new PFieldReflecter();
                                     String key = (String) property.getKey();
                                     String value = (String) property.getValue();
                                     String[] key_spilt = key.split("\\.");
-                                    pField.setConditions(pFieldConditions);
-                                    pField.setTable(table);
-                                    pField.setName(key_spilt[1]);
-                                    String[] value_spilt = value.split("\\.");
-                                    pFieldReflecter.setPFieldConditions(pField, value_spilt);
-                                    table.addPFields(pField);
+                                    //和table同名则设置pField
+                                    if (key_spilt[0].equals(table_name)) {
+                                        PField pField = new PField();
+                                        PFieldConditions pFieldConditions = new PFieldConditions();
+                                        PFieldReflecter pFieldReflecter = new PFieldReflecter();
+                                        pField.setConditions(pFieldConditions);
+                                        pField.setTable(table);
+                                        pField.setName(key_spilt[1]);
+                                        String[] value_spilt = value.split("\\.");
+                                        //反射set属性值
+                                        pFieldReflecter.setPFieldConditions(pField, value_spilt);
+                                        table.addPFields(pField);
+                                    }
                                 }
-                                String file_name = table_file.getName();
-                                table.setName(file_name.substring(0,file_name.length()-4));
-                                table.setTable_file(table_file);
-                                table.setDatabase(database);
                                 database.addTables(table);
-//                                csvReader.close();
                             }
                         }
                     }
-                    database.setDatabase_file(database_file);
-                    database.setName(database_name);
-                    database.setPrototypeDatabase(this);
                     databases.add(database);
                 }
             }

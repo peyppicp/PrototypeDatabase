@@ -23,6 +23,14 @@ public class Database {
     private PrototypeDatabase prototypeDatabase;
     private Properties properties;
 
+    public PrototypeDatabase getPrototypeDatabase() {
+        return prototypeDatabase;
+    }
+
+    public void setPrototypeDatabase(PrototypeDatabase prototypeDatabase) {
+        this.prototypeDatabase = prototypeDatabase;
+    }
+
     public File getProperties_file() {
         return properties_file;
     }
@@ -47,17 +55,9 @@ public class Database {
         this.properties_file = properties;
     }
 
-    public PrototypeDatabase getPrototypeDatabase() {
-        return prototypeDatabase;
-    }
-
-    public void setPrototypeDatabase(PrototypeDatabase prototypeDatabase) {
-        this.prototypeDatabase = prototypeDatabase;
-    }
-
     public Table createTable(String name) throws AlreadyExistDatabaseException, IOException {
-        File file = new File(database_file, name+".csv");
-        if(file.exists()){
+        File file = new File(database_file, name + ".csv");
+        if (file.exists()) {
             throw new AlreadyExistDatabaseException();
         }
         file.createNewFile();
@@ -72,25 +72,25 @@ public class Database {
 
     public void dropTable(Table table) throws TableNotFoundException {
         File table_file = table.getTable_file();
-        if(table_file.exists()){
+        if (table_file.exists()) {
             table_file.delete();
-        }else{
+        } else {
             throw new TableNotFoundException();
         }
         removeTable(table);
     }
 
     public void removeTable(Table table) throws TableNotFoundException {
-        if(tables.contains(table)){
+        if (tables.contains(table)) {
             tables.remove(table);
-        }else{
+        } else {
             throw new TableNotFoundException();
         }
     }
 
     public Table getTableByName(String name) throws TableNotFoundException {
-        for(Table table:tables){
-            if(table.getName().equals(name)){
+        for (Table table : tables) {
+            if (table.getName().equals(name)) {
                 return table;
             }
         }
@@ -105,8 +105,8 @@ public class Database {
         this.database_file = database_file;
     }
 
-    public void addTables(Table table){
-        if(!tables.contains(table)){
+    public void addTables(Table table) {
+        if (!tables.contains(table)) {
             tables.add(table);
         }
     }
@@ -119,7 +119,8 @@ public class Database {
         this.name = name;
     }
 
-    public void execute(SQLInterface sqlInterface){
+    public void execute(SQLInterface sqlInterface) {
 
     }
+
 }

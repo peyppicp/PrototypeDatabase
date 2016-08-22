@@ -6,8 +6,8 @@ Guide
 
 <br> The way to init database
 ```
-        PrototypeDatabase prototypeDatabase = new PrototypeDatabase();
-        Database test_database = prototypeDatabase.createDataBase("test_database");
+        PrototypeDatabase prototypeDatabaseHolder = new PrototypeDatabase();
+        Database test_database = prototypeDatabaseHolder.createDataBase("test_database");
         Table test_table = test_database.createTable("test_table");
 ```
 

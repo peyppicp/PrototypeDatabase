@@ -1,40 +1,62 @@
 package org.prototypeDatabase.core.insert;
 
-import org.prototypeDatabase.conditions.ConditionsInterface;
-import org.prototypeDatabase.conditions.InsertConditionsInterface;
+import org.prototypeDatabase.conditions.sql.Into;
+import org.prototypeDatabase.conditions.sql.Values;
 import org.prototypeDatabase.core.SQLInterface;
-import org.prototypeDatabase.values.InsertValuesInterface;
-import org.prototypeDatabase.values.ValuesInterface;
+import org.prototypeDatabase.entity.Table;
+import org.prototypeDatabase.exception.OperationNotIllegalException;
+import org.prototypeDatabase.util.file.CsvOperation;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.io.IOException;
 
 /**
  * Created by Peyppicp on 2016/8/20.
  */
 public class InsertSQL implements SQLInterface{
 
-    private ConditionsInterface conditions;
-    private ValuesInterface values;
+    private Into into;
+    private Values values;
 
-    public ConditionsInterface getConditions() {
-        return conditions;
+    public InsertSQL() {
     }
 
-    public void setConditions(ConditionsInterface conditions) {
-        this.conditions = conditions;
+    public InsertSQL(Values values) {
+        this.values = values;
     }
 
-    public ValuesInterface getValues() {
+    public InsertSQL(Into into, Values values) {
+        this.into = into;
+        this.values = values;
+    }
+
+    public Into getInto() {
+        return into;
+    }
+
+    public void setInto(Into into) {
+        this.into = into;
+    }
+
+    public Values getValues() {
         return values;
     }
 
-    public void setValues(ValuesInterface values) {
+    public void setValues(Values values) {
         this.values = values;
     }
 
     @Override
-    public void execute() {
+    public void executeTable(Table table) throws IOException, OperationNotIllegalException {
+//        List<PField> pFields = table.getPFields();
+        if (into == null) {
+            CsvOperation.writeTo(table, values.getValues());
+        } else {
+            throw new OperationNotIllegalException();
+        }
+    }
+
+    @Override
+    public void executeGlobal() throws IOException {
 
     }
 }

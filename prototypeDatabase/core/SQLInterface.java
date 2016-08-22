@@ -1,12 +1,16 @@
 package org.prototypeDatabase.core;
 
-import org.prototypeDatabase.conditions.ConditionsInterface;
-import org.prototypeDatabase.values.ValuesInterface;
+import org.prototypeDatabase.entity.Table;
+import org.prototypeDatabase.exception.OperationNotIllegalException;
+
+import java.io.IOException;
 
 /**
  * Created by Peyppicp on 2016/8/20.
  */
 public interface SQLInterface {
 
-    public void execute();
+    public void executeTable(Table table) throws IOException, OperationNotIllegalException;
+
+    public void executeGlobal() throws IOException;
 }

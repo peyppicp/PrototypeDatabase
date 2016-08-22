@@ -2,6 +2,7 @@ package org.prototypeDatabase.entity;
 
 import com.csvreader.CsvWriter;
 import org.prototypeDatabase.conditions.PFieldConditions;
+import org.prototypeDatabase.core.SQLEngine;
 import org.prototypeDatabase.exception.PFieldNotFoundException;
 import org.prototypeDatabase.util.reflect.PFieldReflecter;
 
@@ -21,6 +22,7 @@ public class Table {
     private File table_file;
     private File properties_file;
     private Properties properties = new Properties();
+    private SQLEngine sqlEngine = new SQLEngine(this);
 
     public File getPropertiesFile() {
         return properties_file;
@@ -28,6 +30,14 @@ public class Table {
 
     public void setPropertiesFile(File properties) {
         this.properties_file = properties;
+    }
+
+    private SQLEngine getSQLEngine() {
+        return sqlEngine;
+    }
+
+    public List<PField> getPFields() {
+        return pFields;
     }
 
     public PField getPFieldByName(String name) throws PFieldNotFoundException {
@@ -95,5 +105,13 @@ public class Table {
         if (!pFields.contains(pField)) {
             pFields.add(pField);
         }
+    }
+
+    public SQLEngine getSqlEngine() {
+        return sqlEngine;
+    }
+
+    public void setSqlEngine(SQLEngine sqlEngine) {
+        this.sqlEngine = sqlEngine;
     }
 }
