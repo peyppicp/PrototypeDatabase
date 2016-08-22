@@ -23,10 +23,15 @@ Guide
 
         student.create();
 
+        //insert data
         SQLEngine sqlEngine = student.getSqlEngine();
         sqlEngine.executeTable(new InsertSQL(new Values(new String[]{"pyx","123456"})));
         sqlEngine.executeTable(new InsertSQL(new Values(new String[]{"wl","abc"})));
         sqlEngine.executeTable(new InsertSQL(new Values(new String[]{"lj","meiyoumima"})));
+        
+        //select data
+        SelectSQL selectSQL = new SelectSQL(new Select(student.listPFields().toArray(new PField[student.listPFields().size()])));
+        Result result = sqlEngine.executeTable(selectSQL);
 ```
 
 TODO
