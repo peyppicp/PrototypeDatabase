@@ -1,6 +1,6 @@
 # PrototypeDatabase
-一个轻量级原型数据库，用于快速原型开发阶段。该数据库提供了基本的数据库操作。
-A simple database which support base functions of the database for developers who are at the stage of ripid prototyping.
+<br>一个轻量级原型数据库，用于快速原型开发阶段。该数据库提供了基本的数据库操作。
+<br>A simple database which support base functions of the database for developers who are at the stage of ripid prototyping.
 
 Guide&导航
 -------
