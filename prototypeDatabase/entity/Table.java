@@ -40,7 +40,7 @@ public class Table {
     public void modify() throws IllegalAccessException, IOException {
         PFieldReflecter pFieldReflecter = new PFieldReflecter();
         for (PField pField : pFields) {
-            String key = new StringBuffer(this.name).append(".").append(name).toString();
+            String key = new StringBuffer(this.name).append(".").append(pField.getName()).toString();
             String value = pFieldReflecter.getValue(pField.getConditions());
             properties.setProperty(key, value);
         }

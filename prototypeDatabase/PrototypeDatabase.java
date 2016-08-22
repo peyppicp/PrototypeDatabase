@@ -133,6 +133,7 @@ public class PrototypeDatabase {
                                 table.setName(table_name);
                                 table.setDatabase(database);
                                 table.setTable_file(table_file);
+                                table.setPropertiesFile(properties_file);
                                 //读取table的pField属性
                                 Properties table_properties = new Properties();
                                 table_properties.load(new BufferedReader(new InputStreamReader(new FileInputStream(properties_file))));
