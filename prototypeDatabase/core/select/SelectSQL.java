@@ -1,13 +1,17 @@
 package org.prototypeDatabase.core.select;
 
 import com.csvreader.CsvReader;
+import org.prototypeDatabase.conditions.PFieldConstants;
 import org.prototypeDatabase.conditions.sql.*;
 import org.prototypeDatabase.core.SQLInterface;
 import org.prototypeDatabase.entity.PField;
 import org.prototypeDatabase.entity.Table;
+import org.prototypeDatabase.exception.WhereRelationIllegalException;
+import org.prototypeDatabase.exception.WhereStatementNotFoundException;
 
 import java.io.*;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Peyppicp on 2016/8/20.
@@ -16,7 +20,8 @@ public class SelectSQL implements SQLInterface {
 
     private Select select;
     private From from;
-    private Where where;
+    private List<Where> whereList = new LinkedList<>();
+    private int where_relation;
     private GroupBy groupBy;
     private OrderBy orderBy;
     private Having having;
@@ -33,34 +38,110 @@ public class SelectSQL implements SQLInterface {
         this.from = from;
     }
 
-    public SelectSQL(Select select, From from, Where where) {
+    public SelectSQL(Select select, From from, List<Where> whereList, int where_relation) {
         this.select = select;
         this.from = from;
-        this.where = where;
+        this.whereList = whereList;
+        this.where_relation = where_relation;
     }
 
-    public SelectSQL(Select select, From from, Where where, GroupBy groupBy) {
-        this.select = select;
-        this.from = from;
-        this.where = where;
-        this.groupBy = groupBy;
+    public void addWhere(Where where) {
+        if (!whereList.contains(where)) {
+            whereList.add(where);
+        }
     }
 
-    public SelectSQL(Select select, From from, Where where, GroupBy groupBy, OrderBy orderBy) {
-        this.select = select;
-        this.from = from;
-        this.where = where;
-        this.groupBy = groupBy;
-        this.orderBy = orderBy;
+    public void removeWhere(Where where) throws WhereStatementNotFoundException {
+        if (whereList.contains(where)) {
+            whereList.remove(where);
+        } else {
+            throw new WhereStatementNotFoundException();
+        }
     }
 
-    public SelectSQL(Select select, From from, Where where, GroupBy groupBy, OrderBy orderBy, Having having) {
-        this.select = select;
-        this.from = from;
-        this.where = where;
-        this.groupBy = groupBy;
-        this.orderBy = orderBy;
-        this.having = having;
+    @Override
+    public Result executeTable(Table table) throws IOException, WhereRelationIllegalException {
+        if (whereList.size() == 0 || whereList.isEmpty()) {
+            return selectFrom(table);
+        }
+        if (groupBy == null) {
+            return selectFrom(table, where_relation);
+        }
+        return null;
+    }
+
+    @Override
+    public Result executeGlobal() throws IOException {
+        return null;
+    }
+
+    private Result selectFrom(Table table, int symbol) throws IOException, WhereRelationIllegalException {
+        if (symbol != PFieldConstants.AND && symbol != PFieldConstants.OR && symbol != PFieldConstants.NOT) {
+            throw new WhereRelationIllegalException();
+        }
+        CsvReader reader = null;
+        Result result = new Result();
+        LinkedList<String[]> records = new LinkedList<>();
+        File table_file = table.getTable_file();
+        int where_count = whereList.size();
+        reader = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(table_file), "UTF-8")), ',');
+        reader.readHeaders();
+        //读取记录
+        while (reader.readRecord()) {
+            PField[] fields = select.getFields();
+            String[] record = new String[fields.length];
+            //设置计数器，用以记录匹配where的字段
+            int count = 0;
+            for (int i = 0; i < fields.length; i++) {
+                record[i] = reader.get(fields[i].getName());
+                //遍历where语句
+                for (Where where : whereList) {
+                    //AND连接符
+                    if (symbol == PFieldConstants.AND) {
+                        if (fields[i] == where.getpField() && record[i].equals(where.getValue())) {
+                            //如果字段与where的字段相同且值也相同，说明record中有一个字段匹配成功
+                            //计数器自增
+                            count++;
+                            //当计数器的值与where的值相同时，证明已找到匹配的结果
+                            if (count == where_count) {
+                                records.add(record);
+                            }
+                        }
+                        //OR连接符
+                    } else if (symbol == PFieldConstants.OR) {
+                        if (fields[i] == where.getpField() && record[i].equals(where.getValue())) {
+                            if (!records.contains(record)) {
+                                records.add(record);
+                            }
+                        }
+                        //NOT连接符
+                    } else if (symbol == PFieldConstants.NOT) {
+
+                    }
+                }
+            }
+        }
+        result.setResultsList(records);
+        return result;
+    }
+
+    private Result selectFrom(Table table) throws IOException {
+        CsvReader reader = null;
+        Result result = new Result();
+        LinkedList<String[]> strings = new LinkedList<>();
+        File table_file = table.getTable_file();
+        reader = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(table_file), "UTF-8")), ',');
+        reader.readHeaders();
+        while (reader.readRecord()) {
+            PField[] fields = select.getFields();
+            String[] record = new String[fields.length];
+            for (int i = 0; i < fields.length; i++) {
+                record[i] = reader.get(fields[i].getName());
+            }
+            strings.add(record);
+        }
+        result.setResultsList(strings);
+        return result;
     }
 
     public Select getSelect() {
@@ -79,12 +160,12 @@ public class SelectSQL implements SQLInterface {
         this.from = from;
     }
 
-    public Where getWhere() {
-        return where;
+    public List<Where> getWhereList() {
+        return whereList;
     }
 
-    public void setWhere(Where where) {
-        this.where = where;
+    public void setWhereList(List<Where> whereList) {
+        this.whereList = whereList;
     }
 
     public GroupBy getGroupBy() {
@@ -111,39 +192,11 @@ public class SelectSQL implements SQLInterface {
         this.having = having;
     }
 
-    @Override
-    public Result executeTable(Table table) throws IOException {
-        if (where == null) {
-            Result result = selectFrom(table);
-            return result;
-        }
-        if (groupBy == null) {
-
-        }
-        return null;
+    public int getWhere_relation() {
+        return where_relation;
     }
 
-    @Override
-    public Result executeGlobal() throws IOException {
-        return null;
-    }
-
-    public Result selectFrom(Table table) throws IOException {
-        CsvReader reader = null;
-        Result result = new Result();
-        LinkedList<String[]> strings = new LinkedList<>();
-        File table_file = table.getTable_file();
-        reader = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(table_file), "UTF-8")), ',');
-        reader.readHeaders();
-        while (reader.readRecord()) {
-            PField[] fields = select.getFields();
-            String[] record = new String[fields.length];
-            for (int i = 0; i < fields.length; i++) {
-                record[i] = reader.get(fields[i].getName());
-            }
-            strings.add(record);
-        }
-        result.setResultsList(strings);
-        return result;
+    public void setWhere_relation(int where_relation) {
+        this.where_relation = where_relation;
     }
 }

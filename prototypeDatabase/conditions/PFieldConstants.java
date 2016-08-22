@@ -25,4 +25,8 @@ public class PFieldConstants {
     public final static String LONG = "long";
     public final static String STRING = "String";
     public final static String BOOLEAN = "boolean";
+
+    public final static int AND = 0;
+    public final static int OR = 1;
+    public final static int NOT = 2;
 }

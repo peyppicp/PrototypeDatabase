@@ -3,6 +3,7 @@ package org.prototypeDatabase.core;
 import org.prototypeDatabase.conditions.sql.Result;
 import org.prototypeDatabase.entity.Table;
 import org.prototypeDatabase.exception.OperationNotIllegalException;
+import org.prototypeDatabase.exception.WhereRelationIllegalException;
 
 import java.io.IOException;
 
@@ -28,7 +29,7 @@ public class SQLEngine {
         this.table = table;
     }
 
-    public Result executeTable(SQLInterface sqlInterface) throws IOException, OperationNotIllegalException {
+    public Result executeTable(SQLInterface sqlInterface) throws IOException, OperationNotIllegalException, WhereRelationIllegalException {
         return sqlInterface.executeTable(table);
     }
 
