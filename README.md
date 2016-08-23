@@ -48,6 +48,9 @@ TODO&清单
 <br>使用properties文件作为字段属性文件   `finish`
 <br>Use properties file to manage the fields in the table   `finish`
 <br>
+<br>缓存   `in progress`
+<br>Cache   `in progress`
+<br>
 <br>实现SQL支持   `in progress`
 <br>Implments SQL support   `in progress`
 <br>
