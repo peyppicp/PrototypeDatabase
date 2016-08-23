@@ -45,20 +45,6 @@ public class SelectSQL implements SQLInterface {
         this.where_relation = where_relation;
     }
 
-    public void addWhere(Where where) {
-        if (!whereList.contains(where)) {
-            whereList.add(where);
-        }
-    }
-
-    public void removeWhere(Where where) throws WhereStatementNotFoundException {
-        if (whereList.contains(where)) {
-            whereList.remove(where);
-        } else {
-            throw new WhereStatementNotFoundException();
-        }
-    }
-
     @Override
     public Result executeTable(Table table) throws IOException, WhereRelationIllegalException {
         if (whereList.size() == 0 || whereList.isEmpty()) {
@@ -200,5 +186,19 @@ public class SelectSQL implements SQLInterface {
 
     public void setWhere_relation(int where_relation) {
         this.where_relation = where_relation;
+    }
+
+    public void addWhere(Where where) {
+        if (!whereList.contains(where)) {
+            whereList.add(where);
+        }
+    }
+
+    public void removeWhere(Where where) throws WhereStatementNotFoundException {
+        if (whereList.contains(where)) {
+            whereList.remove(where);
+        } else {
+            throw new WhereStatementNotFoundException();
+        }
     }
 }
