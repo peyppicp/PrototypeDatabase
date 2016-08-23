@@ -129,7 +129,7 @@ public class SelectSQL implements SQLInterface {
     private Result selectFrom(Table table) throws IOException {
         CsvReader reader = null;
         Result result = new Result();
-        LinkedList<String[]> strings = new LinkedList<>();
+        LinkedList<String[]> results = new LinkedList<>();
         File table_file = table.getTable_file();
         reader = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(table_file), "UTF-8")), ',');
         reader.readHeaders();
@@ -139,9 +139,9 @@ public class SelectSQL implements SQLInterface {
             for (int i = 0; i < fields.length; i++) {
                 record[i] = reader.get(fields[i].getName());
             }
-            strings.add(record);
+            results.add(record);
         }
-        result.setResultsList(strings);
+        result.setResultsList(results);
         reader.close();
         return result;
     }
