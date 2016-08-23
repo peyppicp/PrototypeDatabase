@@ -43,12 +43,58 @@ public class UpdateSQL implements SQLInterface {
 
     @Override
     public Result executeTable(Table table) throws IOException {
-        return UpdateTo(table);
+        if (whereList.size() == 0 || whereList.isEmpty()) {
+            return UpdateTo(table);
+        }
+        return UpdateTo(table, true);
     }
 
     @Override
     public Result executeGlobal() throws IOException {
         return null;
+    }
+
+    public Result UpdateTo(Table table, boolean bool) throws IOException {
+        CsvReader reader = null;
+        CsvWriter writer = null;
+        File table_file = table.getTable_file();
+        Result result = new Result();
+        LinkedList<String[]> results = new LinkedList<>();
+        LinkedList<String[]> records = new LinkedList<>();
+        reader = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(table_file), "UTF-8")), ',');
+        reader.readHeaders();
+        String[] headers = reader.getHeaders();
+        while (reader.readRecord()) {
+            List<PField> pFields = table.getPFields();
+            String[] strings = new String[pFields.size()];
+            int i = 0, count = 0;
+            for (PField pField : pFields) {
+                strings[i] = reader.get(pField.getName());
+                for (Where where : whereList) {
+                    if (where.getpField() == pField && strings[i].equals(where.getValue())) {
+                        count++;
+                    }
+                }
+                if (count == whereList.size()) {
+                    for (Set set : setList) {
+                        if (pField == set.getpField()) {
+                            strings[i] = set.getValue();
+                        }
+                    }
+                }
+                i++;
+            }
+            records.add(strings);
+        }
+        writer = new CsvWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(table_file, false), "UTF-8")), ',');
+        writer.writeRecord(headers);
+        for (String[] record : records) {
+            writer.writeRecord(record);
+        }
+        writer.flush();
+        writer.close();
+        result.setResultsList(results);
+        return result;
     }
 
     public Result UpdateTo(Table table) throws IOException {
