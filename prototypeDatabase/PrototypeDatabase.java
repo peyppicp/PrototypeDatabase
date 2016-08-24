@@ -76,14 +76,14 @@ public class PrototypeDatabase {
             File[] files = database_file.listFiles();
             for(File file:files){
                 if (file.isDirectory()){
-                    throw new DropDatabaseFaildException("请勿在数据库路径下包含其他文件夹！");
+                    throw new DropDatabaseFaildException("The database directory connot containes other directory!");
                 }else{
                     file.delete();
                 }
             }
             database_file.delete();
         }else{
-            throw new DatabaseNotFoundException();
+            throw new DatabaseNotFoundException(database.getName() + "does not found!");
         }
         removeDatabase(database);
     }
@@ -94,7 +94,7 @@ public class PrototypeDatabase {
                 return database;
             }
         }
-        throw new DatabaseNotFoundException();
+        throw new DatabaseNotFoundException(name +);
     }
 
     public void doInit() throws IOException, PropertiesNotFountException {
