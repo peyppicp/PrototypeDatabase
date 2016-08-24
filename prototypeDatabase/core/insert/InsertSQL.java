@@ -10,6 +10,7 @@ import org.prototypeDatabase.conditions.sql.Values;
 import org.prototypeDatabase.core.SQLInterface;
 import org.prototypeDatabase.entity.PField;
 import org.prototypeDatabase.entity.Table;
+import org.prototypeDatabase.entity.cache.TableCache;
 import org.prototypeDatabase.exception.OperationNotIllegalException;
 
 import java.io.*;
@@ -54,6 +55,7 @@ public class InsertSQL implements SQLInterface {
     @Override
     public Result executeTable(Table table) throws IOException, OperationNotIllegalException {
         if (into == null) {
+            TableCache tableCache = table.getTableCache();
             CsvReader reader = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(table.getTable_file()), "UTF-8")), ',');
             reader.readHeaders();
             String[] values = this.values.getValues();
@@ -78,6 +80,7 @@ public class InsertSQL implements SQLInterface {
             }
             reader.close();
             writeTo(table, values);
+            tableCache.addRecord(this, values);
         } else {
             throw new OperationNotIllegalException("You are supposed to handle this table in createTable function!");
         }

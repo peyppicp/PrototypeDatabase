@@ -6,6 +6,7 @@ import org.prototypeDatabase.conditions.sql.*;
 import org.prototypeDatabase.core.SQLInterface;
 import org.prototypeDatabase.entity.PField;
 import org.prototypeDatabase.entity.Table;
+import org.prototypeDatabase.entity.cache.TableCache;
 import org.prototypeDatabase.exception.WhereRelationIllegalException;
 import org.prototypeDatabase.exception.WhereStatementNotFoundException;
 
@@ -65,9 +66,16 @@ public class SelectSQL implements SQLInterface {
         if (symbol != PFieldConstants.AND && symbol != PFieldConstants.OR && symbol != PFieldConstants.NOT) {
             throw new WhereRelationIllegalException();
         }
-        CsvReader reader = null;
+        TableCache tableCache = table.getTableCache();
+        String[] cache_record = tableCache.getRecord(this);
         Result result = new Result();
         LinkedList<String[]> records = new LinkedList<>();
+        if (cache_record != null) {
+            records.add(cache_record);
+            result.setResultsList(records);
+            return result;
+        }
+        CsvReader reader = null;
         File table_file = table.getTable_file();
         int where_count = whereList.size();
         reader = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(table_file), "UTF-8")), ',');
@@ -91,6 +99,7 @@ public class SelectSQL implements SQLInterface {
                             //当计数器的值与where的值相同时，证明已找到匹配的结果
                             if (count == where_count) {
                                 records.add(record);
+                                tableCache.addRecord(this, record);
                             }
                         }
                         //OR连接符
@@ -98,6 +107,7 @@ public class SelectSQL implements SQLInterface {
                         if (fields[i] == where.getpField() && record[i].equals(where.getValue())) {
                             if (!records.contains(record)) {
                                 records.add(record);
+                                tableCache.addRecord(this, record);
                             }
                         }
                         //NOT连接符
@@ -113,6 +123,7 @@ public class SelectSQL implements SQLInterface {
     }
 
     private Result selectFrom(Table table) throws IOException {
+        TableCache tableCache = table.getTableCache();
         CsvReader reader = null;
         Result result = new Result();
         LinkedList<String[]> results = new LinkedList<>();
@@ -125,6 +136,7 @@ public class SelectSQL implements SQLInterface {
             for (int i = 0; i < fields.length; i++) {
                 record[i] = reader.get(fields[i].getName());
             }
+            tableCache.addRecord(this, record);
             results.add(record);
         }
         result.setResultsList(results);

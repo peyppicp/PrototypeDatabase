@@ -9,6 +9,7 @@ import org.prototypeDatabase.conditions.sql.Where;
 import org.prototypeDatabase.core.SQLInterface;
 import org.prototypeDatabase.entity.PField;
 import org.prototypeDatabase.entity.Table;
+import org.prototypeDatabase.entity.cache.TableCache;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -58,6 +59,7 @@ public class UpdateSQL implements SQLInterface {
         CsvReader reader = null;
         CsvWriter writer = null;
         File table_file = table.getTable_file();
+        TableCache tableCache = table.getTableCache();
         Result result = new Result();
         LinkedList<String[]> results = new LinkedList<>();
         LinkedList<String[]> records = new LinkedList<>();
@@ -81,6 +83,7 @@ public class UpdateSQL implements SQLInterface {
                             strings[i] = set.getValue();
                         }
                     }
+                    tableCache.addRecord(this, strings);
                 }
                 i++;
             }

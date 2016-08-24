@@ -3,6 +3,7 @@ package org.prototypeDatabase.entity;
 import com.csvreader.CsvWriter;
 import org.prototypeDatabase.conditions.PFieldConditions;
 import org.prototypeDatabase.core.SQLEngine;
+import org.prototypeDatabase.entity.cache.TableCache;
 import org.prototypeDatabase.exception.PFieldNotFoundException;
 import org.prototypeDatabase.util.reflect.PFieldReflecter;
 
@@ -23,6 +24,7 @@ public class Table {
     private File properties_file;
     private Properties properties = new Properties();
     private SQLEngine sqlEngine = new SQLEngine(this);
+    private TableCache tableCache = new TableCache();
 
     public List<PField> listPFields() {
         return pFields;
@@ -125,4 +127,7 @@ public class Table {
         this.database = database;
     }
 
+    public TableCache getTableCache() {
+        return tableCache;
+    }
 }
