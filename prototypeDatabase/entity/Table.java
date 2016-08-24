@@ -36,7 +36,7 @@ public class Table {
                 return pField;
             }
         }
-        throw new PFieldNotFoundException();
+        throw new PFieldNotFoundException(name + "does not found!");
     }
 
     public void modify() throws IllegalAccessException, IOException {

@@ -34,7 +34,7 @@ public class Database {
     public Table createTable(String name) throws AlreadyExistDatabaseException, IOException {
         File file = new File(database_file, name + ".csv");
         if (file.exists()) {
-            throw new AlreadyExistDatabaseException();
+            throw new AlreadyExistDatabaseException(name + "already exist!");
         }
         file.createNewFile();
         Table table = new Table();
@@ -51,7 +51,7 @@ public class Database {
         if (table_file.exists()) {
             table_file.delete();
         } else {
-            throw new TableNotFoundException();
+            throw new TableNotFoundException(table.getName() + "does not found!");
         }
         removeTable(table);
     }
@@ -60,7 +60,7 @@ public class Database {
         if (tables.contains(table)) {
             tables.remove(table);
         } else {
-            throw new TableNotFoundException();
+            throw new TableNotFoundException(table.getName() + "does not found!");
         }
     }
 
@@ -70,7 +70,7 @@ public class Database {
                 return table;
             }
         }
-        throw new TableNotFoundException();
+        throw new TableNotFoundException(name + "does not found!");
     }
 
     public File getDatabase_file() {

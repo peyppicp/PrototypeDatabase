@@ -59,6 +59,7 @@ public class DeleteSQL implements SQLInterface {
             String[] strings = new String[pFields.size()];
             for (PField pField : pFields) {
                 strings[i] = reader.get(pField.getName());
+                //找到满足where条件的pField
                 for (Where where : whereList) {
                     if (where.getpField() == pField && strings[i].equals(where.getValue())) {
                         count++;

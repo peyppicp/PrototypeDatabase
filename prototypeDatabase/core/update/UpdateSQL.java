@@ -72,11 +72,13 @@ public class UpdateSQL implements SQLInterface {
             int i = 0, count = 0;
             for (PField pField : pFields) {
                 strings[i] = reader.get(pField.getName());
+                //寻找满足全部where条件的pField
                 for (Where where : whereList) {
                     if (where.getpField() == pField && strings[i].equals(where.getValue())) {
                         count++;
                     }
                 }
+                //找到了满足条件的pField，则进行set动作
                 if (count == whereList.size()) {
                     for (Set set : setList) {
                         if (pField == set.getpField()) {
@@ -89,6 +91,7 @@ public class UpdateSQL implements SQLInterface {
             }
             records.add(strings);
         }
+        //写入数据
         writer = new CsvWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(table_file, false), "UTF-8")), ',');
         writer.writeRecord(headers);
         for (String[] record : records) {

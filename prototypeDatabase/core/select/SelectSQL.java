@@ -64,7 +64,7 @@ public class SelectSQL implements SQLInterface {
 
     private Result selectFrom(Table table, int symbol) throws IOException, WhereRelationIllegalException {
         if (symbol != PFieldConstants.AND && symbol != PFieldConstants.OR && symbol != PFieldConstants.NOT) {
-            throw new WhereRelationIllegalException();
+            throw new WhereRelationIllegalException(symbol + "is illegal here");
         }
         TableCache tableCache = table.getTableCache();
         String[] cache_record = tableCache.getRecord(this);
