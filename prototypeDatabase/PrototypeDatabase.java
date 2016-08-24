@@ -94,7 +94,7 @@ public class PrototypeDatabase {
                 return database;
             }
         }
-        throw new DatabaseNotFoundException(name +);
+        throw new DatabaseNotFoundException(name + "does not found!");
     }
 
     public void doInit() throws IOException, PropertiesNotFountException {
