@@ -54,8 +54,8 @@ TODO&清单
 <br>SQL引擎   `finish`
 <br>SQL engine   `finish`
 <br>
-<br>缓存   `in progress`
-<br>Cache   `in progress`
+<br>缓存   `finish`
+<br>Cache   `finish`
 <br>
 <br>外键   `in progress`
 <br>Foreign key   `in progress`
