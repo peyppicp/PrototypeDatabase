@@ -88,6 +88,10 @@ public class UpdateSQL implements SQLInterface {
                     tableCache.addRecord(this, strings);
                 }
                 i++;
+//                PFieldConditions conditions = pField.getConditions();
+//                if(conditions.getPrimary().equals(PFieldConstants.PRIMARY_KEY)||conditions.getUnique().equals(PFieldConstants.UNQIUE)){
+//                    for()
+//                }
             }
             records.add(strings);
         }

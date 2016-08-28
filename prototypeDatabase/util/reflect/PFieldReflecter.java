@@ -34,11 +34,11 @@ public class PFieldReflecter {
     }
 
 //    private String type;
-//    private String isPrimary;
-//    private String isForeign;
-//    private String isNotNull;
-//    private String isUnique;
-//    private String autoIncreament;
+//    private boolean isPrimary;
+//    private boolean isForeign;
+//    private boolean isNotNull;
+//    private boolean isUnique;
+//    private boolean autoIncreament;
 //
 //    private PField pField;
 //    private PField foreign_key;
@@ -48,13 +48,15 @@ public class PFieldReflecter {
     public void setPFieldConditions(PField pField, String[] value_spilt) {
         PFieldConditions conditions = pField.getConditions();
         conditions.setType(value_spilt[0]);
-        conditions.setIsPrimary(value_spilt[1]);
-        conditions.setIsForeign(value_spilt[2]);
-        conditions.setIsNotNull(value_spilt[3]);
-        conditions.setIsUnique(value_spilt[4]);
-        conditions.setAutoIncreament(value_spilt[5]);
+        conditions.setPrimary(Boolean.parseBoolean(value_spilt[1]));
+        conditions.setForeign(Boolean.parseBoolean(value_spilt[2]));
+        conditions.setNotNull(Boolean.parseBoolean(value_spilt[3]));
+        conditions.setUnique(Boolean.parseBoolean(value_spilt[4]));
+        conditions.setAutoIncreament(Boolean.parseBoolean(value_spilt[5]));
 
         conditions.setPField(pField);
+//        外键
+//        conditions.setForeign_key();
         conditions.setOnDelete(Integer.parseInt(value_spilt[8]));
         conditions.setOnUpdata(Integer.parseInt(value_spilt[9]));
     }

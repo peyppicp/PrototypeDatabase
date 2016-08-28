@@ -67,7 +67,7 @@ public class InsertSQL implements SQLInterface {
                     PFieldConditions conditions = pField.getConditions();
                     //primary key&unqiue
                     String record = reader.get(pField.getName());
-                    if (PFieldConstants.PRIMARY_KEY.equals(conditions.getIsPrimary()) || PFieldConstants.UNQIUE.equals(conditions.getIsUnique())) {
+                    if (PFieldConstants.PRIMARY_KEY == conditions.getPrimary() || PFieldConstants.UNQIUE == conditions.getUnique()) {
                         if (record.equals(values[i])) {
                             count++;
                         }

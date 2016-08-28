@@ -8,11 +8,11 @@ import org.prototypeDatabase.entity.PField;
 public class PFieldConditions {
 
     private String type;
-    private String isPrimary;
-    private String isForeign;
-    private String isNotNull;
-    private String isUnique;
-    private String autoIncreament;
+    private boolean isPrimary;
+    private boolean isForeign;
+    private boolean isNotNull;
+    private boolean isUnique;
+    private boolean autoIncreament;
 
     private PField pField;
     private PField foreign_key;
@@ -27,44 +27,54 @@ public class PFieldConditions {
         this.type = type;
     }
 
-    public String getIsPrimary() {
+    public boolean getPrimary() {
         return isPrimary;
     }
 
-    public void setIsPrimary(String isPrimary) {
-        this.isPrimary = isPrimary;
+    public void setPrimary(boolean flag) {
+        if (flag) {
+            this.isPrimary = PFieldConstants.PRIMARY_KEY;
+        }
     }
 
-    public String getIsForeign() {
+    public boolean getForeign() {
         return isForeign;
     }
 
-    public void setIsForeign(String isForeign) {
-        this.isForeign = isForeign;
+    public void setForeign(boolean flag) {
+        if (flag) {
+            this.isForeign = PFieldConstants.FOREIGN_KEY;
+        }
     }
 
-    public String getIsNotNull() {
+    public boolean getNotNull() {
         return isNotNull;
     }
 
-    public void setIsNotNull(String isNotNull) {
-        this.isNotNull = isNotNull;
+    public void setNotNull(boolean flag) {
+        if (flag) {
+            this.isNotNull = PFieldConstants.NOT_NULL;
+        }
     }
 
-    public String getIsUnique() {
+    public boolean getUnique() {
         return isUnique;
     }
 
-    public void setIsUnique(String isUnique) {
-        this.isUnique = isUnique;
+    public void setUnique(boolean flag) {
+        if (flag) {
+            this.isUnique = PFieldConstants.UNQIUE;
+        }
     }
 
-    public String getAutoIncreament() {
+    public boolean getAutoIncreament() {
         return autoIncreament;
     }
 
-    public void setAutoIncreament(String autoIncreament) {
-        this.autoIncreament = autoIncreament;
+    public void setAutoIncreament(boolean flag) {
+        if (flag) {
+            this.autoIncreament = PFieldConstants.AUTOINCREAMENT;
+        }
     }
 
     public PField getPField() {

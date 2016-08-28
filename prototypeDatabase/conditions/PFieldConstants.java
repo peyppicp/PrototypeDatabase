@@ -5,15 +5,15 @@ package org.prototypeDatabase.conditions;
  */
 public class PFieldConstants {
 
-    public final static String NOT_NULL = "not_null";
+    public final static boolean NOT_NULL = true;
 
-    public final static String PRIMARY_KEY = "primary_key";
+    public final static boolean PRIMARY_KEY = true;
 
-    public final static String FOREIGN_KEY = "foreign_key";
+    public final static boolean FOREIGN_KEY = true;
 
-    public final static String UNQIUE = "unique";
+    public final static boolean UNQIUE = true;
 
-    public final static String AUTOINCREAMENT = "auto_increament";
+    public final static boolean AUTOINCREAMENT = true;
 
     public final static int CASCADE = 0;
     public final static int RESTRICT = 1;

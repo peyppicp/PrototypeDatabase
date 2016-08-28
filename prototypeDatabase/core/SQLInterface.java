@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public interface SQLInterface {
 
-    public Result executeTable(Table table) throws IOException, OperationNotIllegalException, WhereRelationIllegalException;
+    Result executeTable(Table table) throws IOException, OperationNotIllegalException, WhereRelationIllegalException;
 
-    public Result executeGlobal() throws IOException;
+    Result executeGlobal() throws IOException;
 }
