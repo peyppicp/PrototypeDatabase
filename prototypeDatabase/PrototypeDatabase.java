@@ -4,10 +4,7 @@ import org.prototypeDatabase.conditions.PFieldConditions;
 import org.prototypeDatabase.entity.Database;
 import org.prototypeDatabase.entity.PField;
 import org.prototypeDatabase.entity.Table;
-import org.prototypeDatabase.exception.DatabaseAlreadExistsException;
-import org.prototypeDatabase.exception.DatabaseNotFoundException;
-import org.prototypeDatabase.exception.DropDatabaseFaildException;
-import org.prototypeDatabase.exception.PropertiesNotFountException;
+import org.prototypeDatabase.exception.*;
 import org.prototypeDatabase.util.reflect.PFieldReflecter;
 
 import java.io.*;
@@ -24,11 +21,11 @@ public class PrototypeDatabase {
     private String base_path;
     private File base_file;
 
-    private PrototypeDatabase() throws IOException, PropertiesNotFountException {
+    private PrototypeDatabase() throws IOException, PropertiesNotFountException, StringLengthIllegalException {
         doInit();
     }
 
-    public static synchronized PrototypeDatabase instance() throws IOException, PropertiesNotFountException {
+    public static synchronized PrototypeDatabase instance() throws IOException, PropertiesNotFountException, StringLengthIllegalException {
         if (prototypeDatabase == null) {
             prototypeDatabase = new PrototypeDatabase();
         }
@@ -97,7 +94,7 @@ public class PrototypeDatabase {
         throw new DatabaseNotFoundException(name + "does not found!");
     }
 
-    public void doInit() throws IOException, PropertiesNotFountException {
+    public void doInit() throws IOException, PropertiesNotFountException, StringLengthIllegalException {
         Properties properties = new Properties();
         String properties_path = System.getProperty("user.dir") + "\\src\\PDatabase.properties";
         properties.load(new BufferedInputStream(new FileInputStream(properties_path)));

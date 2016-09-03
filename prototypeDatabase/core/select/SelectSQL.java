@@ -49,16 +49,21 @@ public class SelectSQL implements SQLInterface {
     @Override
     public Result executeTable(Table table) throws IOException, WhereRelationIllegalException {
         if (whereList.size() == 0 || whereList.isEmpty()) {
-            return selectFrom(table);
+//            return selectFrom(table);
+            return nio(table);
         }
         if (groupBy == null) {
-            return selectFrom(table, where_relation);
+//            return selectFrom(table, where_relation);
         }
         return null;
     }
 
     @Override
     public Result executeGlobal() throws IOException {
+        return null;
+    }
+
+    public Result nio(Table table) {
         return null;
     }
 

@@ -5,6 +5,7 @@ import org.prototypeDatabase.conditions.PFieldConditions;
 import org.prototypeDatabase.core.SQLEngine;
 import org.prototypeDatabase.entity.cache.TableCache;
 import org.prototypeDatabase.exception.PFieldNotFoundException;
+import org.prototypeDatabase.exception.StringLengthIllegalException;
 import org.prototypeDatabase.util.reflect.PFieldReflecter;
 
 import java.io.*;
@@ -62,13 +63,14 @@ public class Table {
         properties.store(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(properties_file, true), "UTF-8")), "");
     }
 
-    public void createPField(String name, PFieldConditions conditions) throws IllegalAccessException, IOException {
+    public void createPField(String name, PFieldConditions conditions) throws IllegalAccessException, IOException, StringLengthIllegalException {
         PField pField = new PField();
         pField.setName(name);
 //        pField.setType(type);
         pField.setConditions(conditions);
         pField.setTable(this);
         conditions.setPField(pField);
+        conditions.decideLength();
         addPFields(pField);
 
         PFieldReflecter pFieldReflecter = new PFieldReflecter();

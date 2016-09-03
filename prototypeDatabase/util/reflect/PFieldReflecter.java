@@ -2,6 +2,7 @@ package org.prototypeDatabase.util.reflect;
 
 import org.prototypeDatabase.conditions.PFieldConditions;
 import org.prototypeDatabase.entity.PField;
+import org.prototypeDatabase.exception.StringLengthIllegalException;
 
 import java.lang.reflect.Field;
 
@@ -45,7 +46,7 @@ public class PFieldReflecter {
 //    private int onDelete;
 //    private int onUpdata;
 
-    public void setPFieldConditions(PField pField, String[] value_spilt) {
+    public void setPFieldConditions(PField pField, String[] value_spilt) throws StringLengthIllegalException {
         PFieldConditions conditions = pField.getConditions();
         conditions.setType(value_spilt[0]);
         conditions.setPrimary(Boolean.parseBoolean(value_spilt[1]));
@@ -57,7 +58,8 @@ public class PFieldReflecter {
         conditions.setPField(pField);
 //        外键
 //        conditions.setForeign_key();
-        conditions.setOnDelete(Integer.parseInt(value_spilt[8]));
-        conditions.setOnUpdata(Integer.parseInt(value_spilt[9]));
+        conditions.setLength(Integer.parseInt(value_spilt[8]));
+        conditions.setOnDelete(Integer.parseInt(value_spilt[9]));
+        conditions.setOnUpdata(Integer.parseInt(value_spilt[10]));
     }
 }

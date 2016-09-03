@@ -1,6 +1,7 @@
 package org.prototypeDatabase.conditions;
 
 import org.prototypeDatabase.entity.PField;
+import org.prototypeDatabase.exception.StringLengthIllegalException;
 
 /**
  * Created by Peyppicp on 2016/8/21.
@@ -16,8 +17,24 @@ public class PFieldConditions {
 
     private PField pField;
     private PField foreign_key;
+    //字节数
+    private int length;
     private int onDelete;
     private int onUpdata;
+
+    public void decideLength() throws StringLengthIllegalException {
+        if (length == 0) {
+            if (type.equals(PFieldConstants.BOOLEAN)) {
+                length = 1;
+            } else if (type.equals(PFieldConstants.INT)) {
+                length = 4;
+            } else if (type.equals(PFieldConstants.LONG)) {
+                length = 8;
+            } else if (type.equals(PFieldConstants.STRING)) {
+                throw new StringLengthIllegalException("String need to define the length!");
+            }
+        }
+    }
 
     public String getType() {
         return type;
@@ -91,6 +108,15 @@ public class PFieldConditions {
 
     public void setForeign_key(PField foreign_key) {
         this.foreign_key = foreign_key;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) throws StringLengthIllegalException {
+        this.length = length;
+        decideLength();
     }
 
     public int getOnDelete() {
