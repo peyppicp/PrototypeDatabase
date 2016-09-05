@@ -22,6 +22,7 @@ public class Table {
     private List<PField> pFields = new LinkedList<>();
     private Database database;
     private File table_file;
+    private File xml_file;
     private File properties_file;
     private Properties properties = new Properties();
     private SQLEngine sqlEngine = new SQLEngine(this);
@@ -83,6 +84,14 @@ public class Table {
         if (!pFields.contains(pField)) {
             pFields.add(pField);
         }
+    }
+
+    public File getXml_file() {
+        return xml_file;
+    }
+
+    public void setXml_file(File xml_file) {
+        this.xml_file = xml_file;
     }
 
     public SQLEngine getSqlEngine() {

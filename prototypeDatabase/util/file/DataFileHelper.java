@@ -1,5 +1,6 @@
 package org.prototypeDatabase.util.file;
 
+import org.prototypeDatabase.core.insert.InsertSQL;
 import org.prototypeDatabase.core.select.SelectSQL;
 import org.prototypeDatabase.entity.Table;
 
@@ -31,12 +32,12 @@ public class DataFileHelper {
         return null;
     }
 
-    public void insertTo(ByteBuffer byteBuffer) throws IOException {
+    public void insertTo(InsertSQL insertSQL) throws IOException {
         File table_file = table.getTable_file();
         RandomAccessFile randomAccessFile = new RandomAccessFile(table_file, "rw");
         FileChannel channel = randomAccessFile.getChannel();
         long position = channel.size();
-        channel.write(byteBuffer, position);
+//        channel.write(byteBuffer, position);
     }
 
     public Table getTable() {

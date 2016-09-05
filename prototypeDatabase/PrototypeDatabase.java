@@ -53,33 +53,33 @@ public class PrototypeDatabase {
         return database;
     }
 
-    protected void addDatabase(Database database){
-        if(!databases.contains(database)){
+    protected void addDatabase(Database database) {
+        if (!databases.contains(database)) {
             databases.add(database);
         }
     }
 
     protected void removeDatabase(Database database) throws DatabaseNotFoundException {
-        if(databases.contains(database)){
+        if (databases.contains(database)) {
             databases.remove(database);
-        }else {
+        } else {
             throw new DatabaseNotFoundException();
         }
     }
 
     public void dropDatabase(Database database) throws DatabaseNotFoundException, DropDatabaseFaildException {
         File database_file = database.getDatabase_file();
-        if(database_file.exists()){
+        if (database_file.exists()) {
             File[] files = database_file.listFiles();
-            for(File file:files){
-                if (file.isDirectory()){
+            for (File file : files) {
+                if (file.isDirectory()) {
                     throw new DropDatabaseFaildException("The database directory connot containes other directory!");
-                }else{
+                } else {
                     file.delete();
                 }
             }
             database_file.delete();
-        }else{
+        } else {
             throw new DatabaseNotFoundException(database.getName() + "does not found!");
         }
         removeDatabase(database);
@@ -122,7 +122,7 @@ public class PrototypeDatabase {
                         //设置表
                         for (int j = 0; j < table_files.length; j++) {
                             File table_file = table_files[j];
-                            if (table_file.isFile() && table_file.getName().endsWith(".csv")) {
+                            if ((table_file.isFile() && (table_file.getName().endsWith(".csv")))) {
                                 Table table = new Table();
                                 //设置表的字段
                                 String file_name = table_file.getName();
@@ -130,6 +130,8 @@ public class PrototypeDatabase {
                                 table.setName(table_name);
                                 table.setDatabase(database);
                                 table.setTable_file(table_file);
+                                //TODO
+                                table.setXml_file(new File(table_file.getCanonicalPath().replace(".csv", ".xml")));
                                 table.setPropertiesFile(properties_file);
                                 //读取table的pField属性
                                 Properties table_properties = new Properties();
