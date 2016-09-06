@@ -15,10 +15,12 @@ import org.prototypeDatabase.conditions.sql.Values;
 import org.prototypeDatabase.core.SQLInterface;
 import org.prototypeDatabase.entity.PField;
 import org.prototypeDatabase.entity.Table;
+import org.prototypeDatabase.entity.cache.TableCache;
 import org.prototypeDatabase.exception.OperationNotIllegalException;
 
 import java.io.*;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -57,14 +59,19 @@ public class InsertSQL implements SQLInterface {
         this.values = values;
     }
 
-    public void executeXML(Table table) throws DocumentException, IOException, OperationNotIllegalException {
+    public Result executeXML(Table table) throws DocumentException, IOException, OperationNotIllegalException {
         if (into == null) {
+            String[] values = this.values.getValues();
+            List<PField> pFields = table.getPFields();
+            //插入数量判断
+            if (values.length != pFields.size()) {
+                throw new OperationNotIllegalException("Numbers of values need to be equals to pfields!");
+            }
+
             File xml_file = table.getXml_file();
             SAXReader saxReader = new SAXReader();
             Document document = saxReader.read(xml_file);
             Element rootElement = document.getRootElement();
-            String[] values = this.values.getValues();
-            List<PField> pFields = table.getPFields();
             int i = 0, count = 0;
 
 //            List<Element> record1 = rootElement.elements("record");
@@ -107,7 +114,17 @@ public class InsertSQL implements SQLInterface {
             XMLWriter xmlWriter = new XMLWriter(new BufferedWriter(new FileWriter(xml_file)), OutputFormat.createCompactFormat());
             xmlWriter.write(document);
             xmlWriter.close();
+
+            //收尾
+            TableCache tableCache = table.getTableCache();
+            Result result = new Result();
+            List<String[]> resultsList = new LinkedList<>();
+            tableCache.addRecord(this, values);
+            resultsList.add(values);
+            result.setResultsList(resultsList);
+            return result;
         }
+        return null;
     }
 
     @Override

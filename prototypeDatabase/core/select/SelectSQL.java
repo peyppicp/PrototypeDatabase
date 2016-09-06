@@ -1,16 +1,22 @@
 package org.prototypeDatabase.core.select;
 
 import com.csvreader.CsvReader;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.prototypeDatabase.conditions.PFieldConstants;
 import org.prototypeDatabase.conditions.sql.*;
 import org.prototypeDatabase.core.SQLInterface;
 import org.prototypeDatabase.entity.PField;
 import org.prototypeDatabase.entity.Table;
 import org.prototypeDatabase.entity.cache.TableCache;
+import org.prototypeDatabase.exception.PFieldNotFoundException;
 import org.prototypeDatabase.exception.WhereRelationIllegalException;
 import org.prototypeDatabase.exception.WhereStatementNotFoundException;
 
 import java.io.*;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,7 +28,7 @@ public class SelectSQL implements SQLInterface {
     private Select select;
     private From from;
     private List<Where> whereList = new LinkedList<>();
-    private int where_relation;
+    private int where_relation = PFieldConstants.AND;
     private GroupBy groupBy;
     private OrderBy orderBy;
     private Having having;
@@ -46,24 +52,79 @@ public class SelectSQL implements SQLInterface {
         this.where_relation = where_relation;
     }
 
+    public Result selectXML(Table table, int symbol) throws DocumentException, WhereRelationIllegalException, PFieldNotFoundException {
+        if (symbol != PFieldConstants.AND && symbol != PFieldConstants.OR && symbol != PFieldConstants.NOT) {
+            throw new WhereRelationIllegalException(symbol + "is illegal here");
+        }
+        List<PField> pFields = table.getPFields();
+        File xml_file = table.getXml_file();
+        TableCache tableCache = table.getTableCache();
+        LinkedList<String[]> results = new LinkedList<>();
+        SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(xml_file);
+        Element rootElement = document.getRootElement();
+        Iterator<Element> records = rootElement.elementIterator("record");
+        PField[] fields = this.select.getFields();
+        String[] strings = new String[fields.length];
+        while (records.hasNext()) {
+            //Record
+            String[] strings_temp = new String[fields.length];
+            Element record = records.next();
+            Iterator<Element> values = record.elementIterator("value");
+            int i = 0;
+            int count = 0;
+            while (values.hasNext()) {
+                //Values
+                Element value = values.next();
+                String pField_name = value.attributeValue("name");
+                String text = value.getText();
+                //记录当前值
+                for (PField pField : fields) {
+                    if (pField.getName().equals(pField_name)) {
+                        strings_temp[i] = text;
+                    }
+                }
+                for (Where where : whereList) {
+                    //AND
+                    if (symbol == PFieldConstants.AND) {
+                        //判断是否PField与Value同时相等
+                        if (where.getValue().equals(text) && where.getpField().getName().equals(pField_name)) {
+                            count++;
+                        }
+                        if (count == whereList.size()) {
+                            strings = strings_temp;
+                            results.add(strings);
+                            count = 0;
+                        }
+                    }
+                }
+                i++;
+            }
+        }
+        //Cache
+        for (String[] result_strings : results) {
+            tableCache.addRecord(this, result_strings);
+        }
+
+        Result result = new Result();
+        result.setResultsList(results);
+        return result;
+    }
+
     @Override
-    public Result executeTable(Table table) throws IOException, WhereRelationIllegalException {
+    public Result executeTable(Table table) throws IOException, WhereRelationIllegalException, PFieldNotFoundException, DocumentException {
         if (whereList.size() == 0 || whereList.isEmpty()) {
 //            return selectFrom(table);
-            return nio(table);
+//            return nio(table);
         }
         if (groupBy == null) {
-//            return selectFrom(table, where_relation);
+            return selectXML(table, where_relation);
         }
         return null;
     }
 
     @Override
     public Result executeGlobal() throws IOException {
-        return null;
-    }
-
-    public Result nio(Table table) {
         return null;
     }
 
