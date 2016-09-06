@@ -18,8 +18,7 @@ public class PrototypeDatabase {
 
     private static PrototypeDatabase prototypeDatabase;
     private List<Database> databases = new LinkedList<>();
-    private String base_path;
-    private File base_file;
+    private PrototypeDatabaseConfiguration configuration;
 
     private PrototypeDatabase() throws IOException, PropertiesNotFountException, StringLengthIllegalException {
         doInit();
@@ -38,7 +37,7 @@ public class PrototypeDatabase {
 
     public Database createDataBase(String name) throws DatabaseAlreadExistsException, IOException {
         //在base_file下面建立文件夹作为数据库
-        File file = new File(base_file, name);
+        File file = new File(configuration.getBase_file(), name);
         file.mkdir();
         File properties = new File(file, name + ".properties");
         if (properties.isFile() || properties.exists()) {
@@ -95,13 +94,8 @@ public class PrototypeDatabase {
     }
 
     public void doInit() throws IOException, PropertiesNotFountException, StringLengthIllegalException {
-        Properties properties = new Properties();
-        String properties_path = System.getProperty("user.dir") + "\\src\\PDatabase.properties";
-        properties.load(new BufferedInputStream(new FileInputStream(properties_path)));
-        this.base_path = properties.getProperty("path");
-        this.base_file = new File(base_path);
-
-        File[] database_files = this.base_file.listFiles();
+        configuration = new PrototypeDatabaseConfiguration();
+        File[] database_files = this.configuration.getBase_file().listFiles();
         if (database_files.length != 0 || database_files != null) {
             //设置数据库
             for (int i = 0; i < database_files.length; i++) {

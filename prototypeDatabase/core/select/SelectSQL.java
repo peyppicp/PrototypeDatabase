@@ -59,13 +59,14 @@ public class SelectSQL implements SQLInterface {
         List<PField> pFields = table.getPFields();
         File xml_file = table.getXml_file();
         TableCache tableCache = table.getTableCache();
+        Result result = new Result();
         LinkedList<String[]> results = new LinkedList<>();
         SAXReader saxReader = new SAXReader();
         Document document = saxReader.read(xml_file);
         Element rootElement = document.getRootElement();
         Iterator<Element> records = rootElement.elementIterator("record");
         PField[] fields = this.select.getFields();
-        String[] strings = new String[fields.length];
+        String[] strings;
         while (records.hasNext()) {
             //Record
             String[] strings_temp = new String[fields.length];
@@ -106,7 +107,6 @@ public class SelectSQL implements SQLInterface {
             tableCache.addRecord(this, result_strings);
         }
 
-        Result result = new Result();
         result.setResultsList(results);
         return result;
     }
