@@ -2,6 +2,12 @@ package org.prototypeDatabase.core.update;
 
 import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.prototypeDatabase.conditions.sql.From;
 import org.prototypeDatabase.conditions.sql.Result;
 import org.prototypeDatabase.conditions.sql.Set;
@@ -12,6 +18,7 @@ import org.prototypeDatabase.entity.Table;
 import org.prototypeDatabase.entity.cache.TableCache;
 
 import java.io.*;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,12 +49,75 @@ public class UpdateSQL implements SQLInterface {
         this.whereList = whereList;
     }
 
-    @Override
-    public Result executeTable(Table table) throws IOException {
-        if (whereList.size() == 0 || whereList.isEmpty()) {
-            return UpdateTo(table);
+    public Result executeXML(Table table) throws DocumentException, IOException {
+        File xml_file = table.getXml_file();
+        SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(xml_file);
+        Element rootElement = document.getRootElement();
+        Iterator<Element> iterator = rootElement.elementIterator("record");
+        while (iterator.hasNext()) {
+            Element record = iterator.next();
+            Iterator<Element> values = record.elementIterator("value");
+            while (values.hasNext()) {
+                Element value = values.next();
+                for (Set set : setList) {
+                    if (value.attributeValue("name").equals(set.getpField().getName())) {
+                        value.setText(set.getValue());
+                    }
+                }
+            }
         }
-        return UpdateTo(table, true);
+        XMLWriter xmlWriter = new XMLWriter(new BufferedWriter(new FileWriter(xml_file)), OutputFormat.createCompactFormat());
+        xmlWriter.write(document);
+        xmlWriter.close();
+
+        return null;
+    }
+
+    public Result executeXML(Table table, boolean bool) throws DocumentException, IOException {
+        File xml_file = table.getXml_file();
+        SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(xml_file);
+        Element rootElement = document.getRootElement();
+        Iterator<Element> iterator = rootElement.elementIterator("record");
+        while (iterator.hasNext()) {
+            Element record = iterator.next();
+            Iterator<Element> values = record.elementIterator("value");
+            int i = 0;
+            while (values.hasNext()) {
+                Element value = values.next();
+                for (Where where : whereList) {
+                    String name = value.attributeValue("name");
+                    String pField_name = where.getpField().getName();
+                    String text = value.getText();
+                    String text1 = where.getValue();
+                    if (name.equals(pField_name) && text.equals(text1)) {
+                        i++;
+                    }
+                    if (i == whereList.size()) {
+                        for (Set set : setList) {
+                            if (name.equals(set.getpField().getName())) {
+                                value.setText(set.getValue());
+                            }
+                        }
+                        i = 0;
+                    }
+                }
+            }
+        }
+        XMLWriter xmlWriter = new XMLWriter(new BufferedWriter(new FileWriter(xml_file)), OutputFormat.createCompactFormat());
+        xmlWriter.write(document);
+        xmlWriter.close();
+
+        return null;
+    }
+
+    @Override
+    public Result executeTable(Table table) throws IOException, DocumentException {
+        if (whereList.size() == 0 || whereList.isEmpty()) {
+            return executeXML(table);
+        }
+        return executeXML(table, true);
     }
 
     @Override
