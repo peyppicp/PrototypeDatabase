@@ -116,16 +116,16 @@ public class PrototypeDatabase {
                         //设置表
                         for (int j = 0; j < table_files.length; j++) {
                             File table_file = table_files[j];
-                            if ((table_file.isFile() && (table_file.getName().endsWith(".csv")))) {
+                            if ((table_file.isFile() && (table_file.getName().endsWith(".xml")))) {
                                 Table table = new Table();
                                 //设置表的字段
                                 String file_name = table_file.getName();
                                 String table_name = file_name.substring(0, file_name.length() - 4);
                                 table.setName(table_name);
                                 table.setDatabase(database);
-                                table.setTable_file(table_file);
+//                                table.setTable_file(table_file);
                                 //TODO
-                                table.setXml_file(new File(table_file.getCanonicalPath().replace(".csv", ".xml")));
+                                table.setXml_file(table_file);
                                 table.setPropertiesFile(properties_file);
                                 //读取table的pField属性
                                 Properties table_properties = new Properties();
