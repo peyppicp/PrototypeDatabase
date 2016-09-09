@@ -84,7 +84,8 @@ public class DeleteSQL implements SQLInterface {
         return null;
     }
 
-    public Result delete(Table table) throws IOException {
+    @Deprecated
+    public Result deleteCSV(Table table) throws IOException {
         CsvReader reader = null;
         CsvWriter writer = null;
         Result result = new Result();

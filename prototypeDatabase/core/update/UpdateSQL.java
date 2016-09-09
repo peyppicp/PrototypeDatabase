@@ -125,7 +125,8 @@ public class UpdateSQL implements SQLInterface {
         return null;
     }
 
-    public Result UpdateTo(Table table, boolean bool) throws IOException {
+    @Deprecated
+    public Result UpdateCSV(Table table, boolean bool) throws IOException {
         CsvReader reader = null;
         CsvWriter writer = null;
         File table_file = table.getTable_file();
@@ -177,7 +178,8 @@ public class UpdateSQL implements SQLInterface {
         return result;
     }
 
-    public Result UpdateTo(Table table) throws IOException {
+    @Deprecated
+    public Result UpdateCSV(Table table) throws IOException {
         CsvReader reader = null;
         CsvWriter writer = null;
         File table_file = table.getTable_file();

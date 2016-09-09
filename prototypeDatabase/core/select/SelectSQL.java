@@ -52,11 +52,53 @@ public class SelectSQL implements SQLInterface {
         this.where_relation = where_relation;
     }
 
+    @Override
+    public Result executeTable(Table table) throws IOException, WhereRelationIllegalException, PFieldNotFoundException, DocumentException {
+        if (whereList.size() == 0 || whereList.isEmpty()) {
+            return executeXML(table);
+        }
+        if (groupBy == null) {
+            return executeXML(table, where_relation);
+        }
+        return null;
+    }
+
+    public Result executeXML(Table table) throws DocumentException, IOException {
+        File xml_file = table.getXml_file();
+        TableCache tableCache = table.getTableCache();
+        Result result = new Result();
+        SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(xml_file);
+        Element rootElement = document.getRootElement();
+        Iterator<Element> iterator = rootElement.elementIterator("record");
+        PField[] fields = this.select.getFields();
+        LinkedList<String[]> result_list = new LinkedList<>();
+        while (iterator.hasNext()) {
+            String[] strings = new String[fields.length];
+            Element record = iterator.next();
+            Iterator<Element> values = record.elementIterator("value");
+            int i = 0;
+            while (values.hasNext()) {
+                Element value = values.next();
+                if (value.attributeValue("name").equals(fields[i].getName())) {
+                    strings[i] = value.getText();
+                }
+                i++;
+            }
+            result_list.add(strings);
+            tableCache.addRecord(this, strings);
+        }
+
+        result.setResultsList(result_list);
+
+        return result;
+    }
+
     public Result executeXML(Table table, int symbol) throws DocumentException, WhereRelationIllegalException, PFieldNotFoundException {
         if (symbol != PFieldConstants.AND && symbol != PFieldConstants.OR && symbol != PFieldConstants.NOT) {
             throw new WhereRelationIllegalException(symbol + "is illegal here");
         }
-        List<PField> pFields = table.getPFields();
+//        List<PField> pFields = table.getPFields();
         File xml_file = table.getXml_file();
         TableCache tableCache = table.getTableCache();
         Result result = new Result();
@@ -112,23 +154,12 @@ public class SelectSQL implements SQLInterface {
     }
 
     @Override
-    public Result executeTable(Table table) throws IOException, WhereRelationIllegalException, PFieldNotFoundException, DocumentException {
-        if (whereList.size() == 0 || whereList.isEmpty()) {
-//            return selectFrom(table);
-//            return nio(table);
-        }
-        if (groupBy == null) {
-            return executeXML(table, where_relation);
-        }
-        return null;
-    }
-
-    @Override
     public Result executeGlobal() throws IOException {
         return null;
     }
 
-    private Result selectFrom(Table table, int symbol) throws IOException, WhereRelationIllegalException {
+    @Deprecated
+    private Result selectCSV(Table table, int symbol) throws IOException, WhereRelationIllegalException {
         if (symbol != PFieldConstants.AND && symbol != PFieldConstants.OR && symbol != PFieldConstants.NOT) {
             throw new WhereRelationIllegalException(symbol + "is illegal here");
         }
@@ -188,7 +219,8 @@ public class SelectSQL implements SQLInterface {
         return result;
     }
 
-    private Result selectFrom(Table table) throws IOException {
+    @Deprecated
+    private Result selectCSV(Table table) throws IOException {
         TableCache tableCache = table.getTableCache();
         CsvReader reader = null;
         Result result = new Result();

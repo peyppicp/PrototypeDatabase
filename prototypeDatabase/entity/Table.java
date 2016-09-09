@@ -1,6 +1,5 @@
 package org.prototypeDatabase.entity;
 
-import com.csvreader.CsvWriter;
 import org.prototypeDatabase.conditions.PFieldConditions;
 import org.prototypeDatabase.core.SQLEngine;
 import org.prototypeDatabase.entity.cache.TableCache;
@@ -21,6 +20,7 @@ public class Table {
     private String name;
     private List<PField> pFields = new LinkedList<>();
     private Database database;
+    @Deprecated
     private File table_file;
     private File xml_file;
     private File properties_file;
@@ -58,9 +58,9 @@ public class Table {
             records[i] = pField.getName();
             i++;
         }
-        CsvWriter writer = new CsvWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(table_file, true), "UTF-8")), ',');
-        writer.writeRecord(records);
-        writer.close();
+//        CsvWriter writer = new CsvWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(table_file, true), "UTF-8")), ',');
+//        writer.writeRecord(records);
+//        writer.close();
         properties.store(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(properties_file, true), "UTF-8")), "");
     }
 
@@ -122,10 +122,12 @@ public class Table {
         this.name = name;
     }
 
+    @Deprecated
     public File getTable_file() {
         return table_file;
     }
 
+    @Deprecated
     public void setTable_file(File table_file) {
         this.table_file = table_file;
     }

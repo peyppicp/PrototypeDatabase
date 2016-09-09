@@ -3,9 +3,7 @@ package org.prototypeDatabase.entity;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXWriter;
 import org.dom4j.io.XMLWriter;
-import org.dom4j.tree.DefaultDocumentType;
 import org.prototypeDatabase.PrototypeDatabase;
 import org.prototypeDatabase.core.SQLInterface;
 import org.prototypeDatabase.exception.AlreadyExistDatabaseException;
@@ -41,11 +39,11 @@ public class Database {
     }
 
     public Table createTable(String name) throws AlreadyExistDatabaseException, IOException, SAXException {
-        File csv_file = new File(database_file, name + ".csv");
-        if (csv_file.exists()) {
-            throw new AlreadyExistDatabaseException(name + "already exist!");
-        }
-        csv_file.createNewFile();
+//        File csv_file = new File(database_file, name + ".csv");
+//        if (csv_file.exists()) {
+//            throw new AlreadyExistDatabaseException(name + "already exist!");
+//        }
+//        csv_file.createNewFile();
 
         File xml_file = new File(database_file, name + ".xml");
         if (xml_file.exists()) {
@@ -63,7 +61,7 @@ public class Database {
 
         Table table = new Table();
         table.setName(name);
-        table.setTable_file(csv_file);
+//        table.setTable_file(csv_file);
         table.setXml_file(xml_file);
         table.setPropertiesFile(properties_file);
         table.setDatabase(this);
@@ -72,7 +70,7 @@ public class Database {
     }
 
     public void dropTable(Table table) throws TableNotFoundException {
-        File table_file = table.getTable_file();
+        File table_file = table.getXml_file();
         if (table_file.exists()) {
             table_file.delete();
         } else {

@@ -1,5 +1,6 @@
 package org.prototypeDatabase.core.insert;
 
+import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -57,6 +58,11 @@ public class InsertSQL implements SQLInterface {
 
     public void setValues(Values values) {
         this.values = values;
+    }
+
+    @Override
+    public Result executeTable(Table table) throws IOException, OperationNotIllegalException, DocumentException {
+        return executeXML(table);
     }
 
     public Result executeXML(Table table) throws DocumentException, IOException, OperationNotIllegalException {
@@ -128,53 +134,47 @@ public class InsertSQL implements SQLInterface {
     }
 
     @Override
-    public Result executeTable(Table table) throws IOException, OperationNotIllegalException {
-//        if (into == null) {
-//            TableCache tableCache = table.getTableCache();
-//            CsvReader reader = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(table.getTable_file()), "UTF-8")), ',');
-//            reader.readHeaders();
-//            String[] values = this.values.getValues();
-//            int count = 0;
-//            while (reader.readRecord()) {
-//                List<PField> pFields = table.getPFields();
-//                int i = 0;
-//                for (PField pField : pFields) {
-//                    PFieldConditions conditions = pField.getConditions();
-//                    //primary key&unqiue
-//                    String record = reader.get(pField.getName());
-//                    if (PFieldConstants.PRIMARY_KEY == conditions.getPrimary() || PFieldConstants.UNQIUE == conditions.getUnique()) {
-//                        if (record.equals(values[i])) {
-//                            count++;
-//                        }
-//                        i++;
-//                    }
-//                }
-//            }
-//            if (count != 0) {
-//                throw new OperationNotIllegalException("Field has unique or primary key modifiers");
-//            }
-//            reader.close();
-//            writeTo(table, values);
-//            tableCache.addRecord(this, values);
-//        } else {
-//            throw new OperationNotIllegalException("You are supposed to handle this table in createTable function!");
-//        }
-
-        try {
-            executeXML(table);
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    @Override
     public Result executeGlobal() throws IOException {
         return null;
     }
 
-    public void writeTo(Table table, String[] values) throws IOException {
+    @Deprecated
+    public Result insertCSV(Table table) throws IOException, OperationNotIllegalException {
+        if (into == null) {
+            TableCache tableCache = table.getTableCache();
+            CsvReader reader = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(table.getTable_file()), "UTF-8")), ',');
+            reader.readHeaders();
+            String[] values = this.values.getValues();
+            int count = 0;
+            while (reader.readRecord()) {
+                List<PField> pFields = table.getPFields();
+                int i = 0;
+                for (PField pField : pFields) {
+                    PFieldConditions conditions = pField.getConditions();
+                    //primary key&unqiue
+                    String record = reader.get(pField.getName());
+                    if (PFieldConstants.PRIMARY_KEY == conditions.getPrimary() || PFieldConstants.UNQIUE == conditions.getUnique()) {
+                        if (record.equals(values[i])) {
+                            count++;
+                        }
+                        i++;
+                    }
+                }
+            }
+            if (count != 0) {
+                throw new OperationNotIllegalException("Field has unique or primary key modifiers");
+            }
+            reader.close();
+            writeTo(table, values);
+            tableCache.addRecord(this, values);
+        } else {
+            throw new OperationNotIllegalException("You are supposed to handle this table in createTable function!");
+        }
+        return null;
+    }
+
+    @Deprecated
+    private void writeTo(Table table, String[] values) throws IOException {
         CsvWriter writer = null;
         File table_file = table.getTable_file();
         writer = new CsvWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(table_file, true), "UTF-8")), ',');
