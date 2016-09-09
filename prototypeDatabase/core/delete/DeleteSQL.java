@@ -14,7 +14,6 @@ import org.prototypeDatabase.conditions.sql.Where;
 import org.prototypeDatabase.core.SQLInterface;
 import org.prototypeDatabase.entity.PField;
 import org.prototypeDatabase.entity.Table;
-import org.prototypeDatabase.entity.cache.TableCache;
 
 import java.io.*;
 import java.util.Iterator;
@@ -53,7 +52,6 @@ public class DeleteSQL implements SQLInterface {
 
     public Result executeXML(Table table) throws DocumentException, IOException {
         File xml_file = table.getXml_file();
-        TableCache tableCache = table.getTableCache();
         SAXReader saxReader = new SAXReader();
         Document document = saxReader.read(xml_file);
         Element rootElement = document.getRootElement();
@@ -82,6 +80,7 @@ public class DeleteSQL implements SQLInterface {
         XMLWriter xmlWriter = new XMLWriter(new BufferedWriter(new FileWriter(xml_file)), OutputFormat.createCompactFormat());
         xmlWriter.write(document);
         xmlWriter.close();
+
         return null;
     }
 
