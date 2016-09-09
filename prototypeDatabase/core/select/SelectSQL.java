@@ -52,7 +52,7 @@ public class SelectSQL implements SQLInterface {
         this.where_relation = where_relation;
     }
 
-    public Result selectXML(Table table, int symbol) throws DocumentException, WhereRelationIllegalException, PFieldNotFoundException {
+    public Result executeXML(Table table, int symbol) throws DocumentException, WhereRelationIllegalException, PFieldNotFoundException {
         if (symbol != PFieldConstants.AND && symbol != PFieldConstants.OR && symbol != PFieldConstants.NOT) {
             throw new WhereRelationIllegalException(symbol + "is illegal here");
         }
@@ -118,7 +118,7 @@ public class SelectSQL implements SQLInterface {
 //            return nio(table);
         }
         if (groupBy == null) {
-            return selectXML(table, where_relation);
+            return executeXML(table, where_relation);
         }
         return null;
     }
